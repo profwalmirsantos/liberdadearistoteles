@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Liberdade em Aristóteles</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Socratic Neutrals -->
+    <!-- Application Structure Plan: A single-page, vertical-scrolling application focused on Aristotle's concept of freedom. The structure is thematic: 1. Introduction to Aristotle, 2. Distinguishing Non-Freedom (Necessary and Contingent), 3. Defining Voluntary Action (True Freedom) with its key components, 4. Interactive Examples to illustrate voluntary/involuntary actions, and 5. The Role of Reason in Choice. This logical flow moves from what freedom isn't to what it is, using interactive elements to deepen understanding. -->
+    <!-- Visualization & Content Choices: 1. Introduction: Explanatory text. 2. Non-Freedom: Two side-by-side cards (HTML/Flexbox) defining 'Necessário' and 'Contingente' with descriptive text and subtle icons (Unicode). 3. Voluntary Action: Key components (Internal Principle, Knowledge, Deliberation, Open to Contraries) presented as expandable detail cards (HTML/JS toggle) for focused learning. A central summary box highlights the link to responsibility. 4. Interactive Examples: The 'Calvin' comic strip content is presented as clear text, and its analysis is toggled by clicking the section header. The 'poisoning' example uses a Unicode icon and its analysis is also toggled by clicking the section header. This provides direct application of concepts using text-based content as per constraints, with a consistent interactive pattern. 5. Role of Reason: Explanatory text with a Unicode balance scale icon for visual metaphor. All interactions are handled by vanilla JavaScript. NO SVG graphics used. NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fdfaf6;
+            color: #3f3c3a;
+        }
+        .section-card {
+            background-color: #fff;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        .expand-button {
+            transition: transform 0.2s ease;
+        }
+        .expand-button.rotated {
+            transform: rotate(90deg);
+        }
+        /* Nova abordagem para visibilidade */
+        .hidden-content {
+            visibility: hidden; /* Conteúdo inicialmente oculto */
+            opacity: 0;
+            height: 0; /* Ocupa 0 espaço */
+            overflow: hidden; /* Garante que não haja rolagem interna quando oculto */
+            transition: visibility 0.3s, opacity 0.3s, height 0.3s;
+        }
+        .hidden-content.show {
+            visibility: visible; /* Conteúdo visível */
+            opacity: 1;
+            height: auto; /* Ocupa o espaço necessário */
+            padding-bottom: 0.5rem; /* Adiciona um pouco de padding para espaçamento */
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <header id="header" class="bg-white/80 backdrop-blur-md sticky top-0 z-50 shadow-sm">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0">
+                    <h1 class="text-2xl font-bold text-gray-800">Filosofia: A Liberdade Segundo Aristóteles</h1>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#introducao" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Introdução</a>
+                        <a href="#nao-liberdade" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Não-Liberdade</a>
+                        <a href="#acao-voluntaria" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Ação Voluntária</a>
+                        <a href="#exemplos" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Exemplos</a>
+                        <a href="#razao-escolha" class="text-gray-600 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Razão e Escolha</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+
+        <section id="introducao" class="text-center mb-16 md:mb-24 scroll-mt-20">
+            <h2 class="text-3xl md:text-4xl font-bold tracking-tight mb-4">Entendendo a Liberdade com Aristóteles</h2>
+            <p class="max-w-3xl mx-auto text-lg text-gray-600">
+                Olá! Você já parou para pensar o que realmente significa ser livre? Aristóteles, um dos maiores filósofos da Grécia Antiga, tinha uma visão muito particular sobre a liberdade e a responsabilidade. Nesta jornada interativa, vamos desvendar como ele distinguia as ações humanas e o que nos torna verdadeiramente livres. Prepare-se para uma profunda reflexão!
+            </p>
+        </section>
+
+        <section id="nao-liberdade" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">O Que Não É Liberdade para Aristóteles</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mt-2">
+                    Para entender a liberdade, primeiro precisamos saber o que a limita. Aristóteles identificou duas categorias de ações que não podem ser consideradas livres: o necessário e o contingente. Explore-as abaixo.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="section-card p-6 md:p-8 flex flex-col items-center text-center">
+                    <span class="text-5xl mb-4 text-rose-500">&#9888;</span>
+                    <h3 class="text-2xl font-semibold mb-3 text-rose-700">O Necessário</h3>
+                    <p class="text-gray-600">
+                        São as ações ou eventos que ocorrem de modo <strong class="font-semibold text-gray-700">externo a nós</strong> e que <strong class="font-semibold text-gray-700">condicionam nossa ação</strong>. Não temos controle sobre elas.
+                    </p>
+                    <p class="text-sm text-gray-500 mt-2">
+                        Exemplo: Desastres naturais como tsunamis ou secas. Ações determinadas por uma força maior (como a vontade divina em algumas religiões).
+                    </p>
+                </div>
+                <div class="section-card p-6 md:p-8 flex flex-col items-center text-center">
+                    <span class="text-5xl mb-4 text-amber-500">&#9878;</span>
+                    <h3 class="text-2xl font-semibold mb-3 text-amber-700">O Contingente</h3>
+                    <p class="text-gray-600">
+                        São as ações que ocorrem <strong class="font-semibold text-gray-700">sem a nossa escolha deliberada</strong>. Embora não sejam impostas por uma força externa, também não são resultado da nossa vontade consciente.
+                    </p>
+                    <p class="text-sm text-gray-500 mt-2">
+                        Exemplo: Um evento que acontece por pura sorte ou acaso, sem intenção.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="acao-voluntaria" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">A Ação Voluntária: O Coração da Liberdade</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mt-2">
+                    Para Aristóteles, a verdadeira liberdade se manifesta na "ação voluntária". Uma ação é voluntária quando o indivíduo pode ser responsabilizado por ela. Clique nos elementos abaixo para entender os pilares da ação livre.
+                </p>
+            </div>
+            <div class="section-card p-6 md:p-8 max-w-3xl mx-auto">
+                <div class="flex items-center justify-between cursor-pointer py-3 border-b border-gray-200" onclick="toggleContent('principio-interno')">
+                    <h3 class="text-xl font-semibold text-gray-700">1. Princípio da Ação Interno ao Agente</h3>
+                    <span id="principio-interno-arrow" class="expand-button text-gray-500">&#9658;</span>
+                </div>
+                <div id="principio-interno-content" class="hidden-content text-gray-600 px-2 py-2">
+                    <p>Ação deve partir da própria pessoa, e não ser imposta por uma força externa. Se você é obrigado por uma ameaça ou chantagem, a ação é involuntária.</p>
+                </div>
+
+                <div class="flex items-center justify-between cursor-pointer py-3 border-b border-gray-200" onclick="toggleContent('conhecimento-circunstancias')">
+                    <h3 class="text-xl font-semibold text-gray-700">2. Conhecimento das Circunstâncias</h3>
+                    <span id="conhecimento-circunstancias-arrow" class="expand-button text-gray-500">&#9658;</span>
+                </div>
+                <div id="conhecimento-circunstancias-content" class="hidden-content text-gray-600 px-2 py-2">
+                    <p>O agente precisa ter clareza sobre o que está fazendo e as consequências de sua ação. Agir por ignorância ou engano não é agir livremente.</p>
+                </div>
+
+                <div class="flex items-center justify-between cursor-pointer py-3 border-b border-gray-200" onclick="toggleContent('capacidade-deliberar')">
+                    <h3 class="text-xl font-semibold text-gray-700">3. Capacidade de Deliberar</h3>
+                    <span id="capacidade-deliberar-arrow" class="expand-button text-gray-500">&#9658;</span>
+                </div>
+                <div id="capacidade-deliberar-content" class="hidden-content text-gray-600 px-2 py-2">
+                    <p>A pessoa deve ser capaz de refletir, pesar prós e contras, e decidir qual a melhor forma de agir entre as opções disponíveis.</p>
+                </div>
+
+                <div class="flex items-center justify-between cursor-pointer py-3" onclick="toggleContent('aberta-aos-contrarios')">
+                    <h3 class="text-xl font-semibold text-gray-700">4. Aberta aos Contrários</h3>
+                    <span id="aberta-aos-contrarios-arrow" class="expand-button text-gray-500">&#9658;</span>
+                </div>
+                <div id="aberta-aos-contrarios-content" class="hidden-content text-gray-600 px-2 py-2">
+                    <p>Se você pode escolher fazer algo, também pode escolher não fazer. A liberdade implica a existência de alternativas reais de escolha.</p>
+                </div>
+
+                <div class="mt-8 p-4 bg-blue-50 rounded-lg text-center">
+                    <p class="text-blue-800 text-lg font-bold">
+                        Ação Voluntária = <span class="text-green-700">Liberdade</span> e <span class="text-green-700">Responsabilidade</span>
+                    </p>
+                    <p class="text-sm text-blue-700 mt-1">
+                        Se a ação é voluntária, o sujeito pode ser responsabilizado pelos seus atos.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="exemplos" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">Análise de Casos: Voluntário ou Involuntário?</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mt-2">
+                    Vamos aplicar o que aprendemos com Aristóteles a situações concretas. Veja os exemplos e entenda a distinção entre ações livres e não-livres.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="section-card p-6 md:p-8 flex flex-col items-center text-center">
+                    <!-- O Caso de Calvin (novo HTML para toggleContent) -->
+                    <div class="flex items-center justify-between cursor-pointer py-3 w-full" onclick="toggleContent('calvin-example')">
+                        <h3 class="text-2xl font-semibold text-indigo-700">O Caso de Calvin</h3>
+                        <span id="calvin-example-arrow" class="expand-button text-gray-500">&#9658;</span>
+                    </div>
+                    <div class="mb-6 w-full">
+                        <p class="text-lg font-medium text-gray-800">Citação da Tirinha:</p>
+                        <blockquote class="text-sm text-gray-600 italic border-l-4 border-indigo-300 pl-4 py-2 mt-2">
+                            MÃE, POSSO TOCAR FOGO NO MEU COLCHÃO? NÃO, CALVIN.<br>
+                            POSSO ANDAR DE TRICICLO NO TELHADO? NÃO, CALVIN.<br>
+                            POSSO COMER UM BISCOITO, ENTÃO? NÃO, CALVIN.<br>
+                            ELA ESTÁ DE MARCAÇÃO COMIGO.
+                        </blockquote>
+                    </div>
+                    <div id="calvin-example-content" class="hidden-content text-gray-600 mt-4 text-left p-2 bg-indigo-50 rounded-lg w-full">
+                        <p><strong>Análise Aristotélica:</strong> Na tirinha, Calvin não age livremente. Suas vontades são restringidas por um impedimento externo: a proibição de sua mãe. Ele é forçado a não fazer o que deseja, o que torna suas ações (ou a falta delas) involuntárias, do ponto de vista da liberdade aristotélica, pois o princípio da ação não é interno a ele.</p>
+                    </div>
+                </div>
+
+                <div class="section-card p-6 md:p-8 flex flex-col items-center text-center">
+                    <!-- O Engano do Veneno (novo HTML para toggleContent) -->
+                    <div class="flex items-center justify-between cursor-pointer py-3 w-full" onclick="toggleContent('veneno-example')">
+                        <h3 class="text-2xl font-semibold text-purple-700">O Engano do Veneno</h3>
+                        <span id="veneno-example-arrow" class="expand-button text-gray-500">&#9658;</span>
+                    </div>
+                    <span class="text-5xl mb-4 text-purple-500">&#128138;</span>
+                    <p class="text-gray-600 mb-6 w-full">
+                        Imagine que uma pessoa ingere veneno pensando que é remédio, por desconhecer o conteúdo do frasco ou por um erro no rótulo.
+                    </p>
+                    <div id="veneno-example-content" class="hidden-content text-gray-600 mt-4 text-left p-2 bg-purple-50 rounded-lg w-full">
+                        <p><strong>Análise Aristotélica:</strong> Esta é uma ação involuntária. Embora o ato de ingerir seja físico, o sujeito não tinha conhecimento das circunstâncias reais da ação (que era veneno). A ignorância sobre o que se faz anula a liberdade, pois impede a deliberação consciente. Portanto, a pessoa não pode ser responsabilizada como se tivesse agido livremente.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="razao-escolha" class="mb-16 md:mb-24 scroll-mt-20">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold">O Papel Fundamental da Razão</h2>
+                <p class="max-w-3xl mx-auto text-lg text-gray-600 mt-2">
+                    Para Aristóteles, a razão é o motor da escolha deliberada. É através dela que exercemos nossa liberdade.
+                </p>
+            </div>
+            <div class="section-card p-6 md:p-8 max-w-xl mx-auto flex flex-col items-center">
+                <span class="text-6xl mb-4 text-gray-600">&#9878;</span>
+                <p class="text-lg text-gray-600 text-center mb-4">
+                    A racionalidade prática nos permite <strong class="font-semibold text-gray-700">pesar os contrários</strong>, <strong class="font-semibold text-gray-700">refletir sobre vantagens e desvantagens</strong>, e <strong class="font-semibold text-gray-700">pôr em uma balança os prós e os contras</strong> de cada possibilidade.
+                </p>
+                <p class="text-xl font-bold text-gray-800">
+                    A Razão = O Motor da Escolha Livre
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-white mt-16">
+        <div class="container mx-auto py-4 px-5 text-center">
+            <p>Aplicação Interativa de Filosofia | Criado para fins educacionais.</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleContent(id) {
+            const content = document.getElementById(id + '-content');
+            const arrow = document.getElementById(id + '-arrow'); 
+
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                if (arrow) { 
+                    arrow.classList.remove('rotated');
+                }
+            } else {
+                content.classList.add('show');
+                if (arrow) { 
+                    arrow.classList.add('rotated');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('header nav .nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    document.querySelector(targetId).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>
